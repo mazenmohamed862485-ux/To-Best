@@ -1,84 +1,85 @@
 // android/app/build.gradle
-  plugins {
-      id "com.android.application"
-      id "kotlin-android"
-      id "dev.flutter.flutter-gradle-plugin"
-  }
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
 
-  def localProperties = new Properties()
-  def localPropertiesFile = rootProject.file('local.properties')
-  if (localPropertiesFile.exists()) {
-      localPropertiesFile.withReader('UTF-8') { reader ->
-          localProperties.load(reader)
-      }
-  }
+// Force Gradle to write outputs to Flutter-expected path: {project_root}/build/app/
+// rootProject.rootDir = android/, so .parentFile = flutter project root
+project.buildDir = new File(rootProject.rootDir.parentFile, "build/app")
 
-  def flutterVersionCode = localProperties.getProperty('flutter.versionCode') ?: '1'
-  def flutterVersionName = localProperties.getProperty('flutter.versionName') ?: '1.0.0'
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader("UTF-8") { reader ->
+        localProperties.load(reader)
+    }
+}
 
-  // Keystore signing
-  def keystoreProperties = new Properties()
-  def keystorePropertiesFile = rootProject.file('key.properties')
-  if (keystorePropertiesFile.exists()) {
-      keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-  }
+def flutterVersionCode = localProperties.getProperty("flutter.versionCode") ?: "1"
+def flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0.0"
 
-  android {
-      namespace "com.tobest.app"
-      compileSdk 35
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
 
-      defaultConfig {
-          applicationId "com.tobest.app"
-          minSdk 21
-          targetSdk 35
-          versionCode flutterVersionCode.toInteger()
-          versionName flutterVersionName
-          multiDexEnabled true
-      }
+android {
+    namespace "com.tobest.app"
+    compileSdk 35
 
-      signingConfigs {
-          release {
-              if (keystorePropertiesFile.exists()) {
-                  keyAlias keystoreProperties['keyAlias']
-                  keyPassword keystoreProperties['keyPassword']
-                  storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-                  storePassword keystoreProperties['storePassword']
-              }
-          }
-      }
+    defaultConfig {
+        applicationId "com.tobest.app"
+        minSdk 21
+        targetSdk 35
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+        multiDexEnabled true
+    }
 
-      buildTypes {
-          debug {
-              debuggable true
-          }
-          release {
-              signingConfig keystorePropertiesFile.exists()
-                  ? signingConfigs.release
-                  : signingConfigs.debug
-              minifyEnabled true
-              shrinkResources true
-              proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
-                  'proguard-rules.pro'
-          }
-      }
+    signingConfigs {
+        release {
+            if (keystorePropertiesFile.exists()) {
+                keyAlias keystoreProperties["keyAlias"]
+                keyPassword keystoreProperties["keyPassword"]
+                storeFile keystoreProperties["storeFile"] ? file(keystoreProperties["storeFile"]) : null
+                storePassword keystoreProperties["storePassword"]
+            }
+        }
+    }
 
-      compileOptions {
-          sourceCompatibility JavaVersion.VERSION_17
-          targetCompatibility JavaVersion.VERSION_17
-      }
+    buildTypes {
+        debug {
+            debuggable true
+        }
+        release {
+            signingConfig keystorePropertiesFile.exists()
+                ? signingConfigs.release
+                : signingConfigs.debug
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+        }
+    }
 
-      kotlinOptions {
-          jvmTarget = '17'
-      }
-  }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
 
-  flutter {
-      source '../..'
-  }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
 
-  dependencies {
-      implementation 'androidx.multidex:multidex:2.0.1'
-      // Required by Flutter's deferred components / Play Store split install
-      implementation 'com.google.android.play:core:1.10.3'
-  }
-  
+flutter {
+    source "../.."
+}
+
+dependencies {
+    implementation "androidx.multidex:multidex:2.0.1"
+    implementation "com.google.android.play:core:1.10.3"
+}
