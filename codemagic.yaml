@@ -1,0 +1,109 @@
+workflows:
+  android-release:
+    name: TO Best — Android Release
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      java: 17
+      groups:
+        - keystore_credentials    # CM_KEYSTORE, CM_KEYSTORE_PASSWORD, CM_KEY_ALIAS, CM_KEY_PASSWORD
+        - google_play             # GCLOUD_SERVICE_ACCOUNT_CREDENTIALS (optional)
+      vars:
+        PACKAGE_NAME: "com.tobest.app"
+        FLUTTER_VERSION: "3.24.0"
+    triggering:
+      events:
+        - push
+        - tag
+      branch_patterns:
+        - pattern: main
+          include: true
+        - pattern: release/*
+          include: true
+      cancel_previous_builds: true
+
+    scripts:
+      - name: Set up keystore
+        script: |
+          echo $CM_KEYSTORE | base64 --decode > $CM_BUILD_DIR/android/app/keystore.jks
+          cat >> $CM_BUILD_DIR/android/key.properties << EOF
+          storePassword=$CM_KEYSTORE_PASSWORD
+          keyPassword=$CM_KEY_PASSWORD
+          keyAlias=$CM_KEY_ALIAS
+          storeFile=keystore.jks
+          EOF
+
+      - name: Get Flutter packages
+        script: flutter pub get
+
+      - name: Flutter analyze (non-blocking)
+        script: flutter analyze --no-fatal-infos || true
+
+      - name: Build APK (debug)
+        script: |
+          flutter build apk \
+            --release \
+            --target-platform android-arm,android-arm64,android-x64 \
+            --split-per-abi \
+            --dart-define=FLUTTER_BUILD_MODE=release
+        when:
+          condition: "$FCI_TAG == ''"
+
+      - name: Build AAB (release / Play Store)
+        script: |
+          flutter build appbundle \
+            --release \
+            --dart-define=FLUTTER_BUILD_MODE=release
+        when:
+          condition: "$FCI_TAG != ''"
+
+    artifacts:
+      - build/app/outputs/flutter-apk/*.apk
+      - build/app/outputs/bundle/release/*.aab
+      - build/app/outputs/mapping/release/mapping.txt
+      - flutter_drive.log
+
+    publishing:
+      email:
+        recipients:
+          - dev@tobest.app
+        notify:
+          success: true
+          failure: true
+
+  android-debug:
+    name: TO Best — Android Debug
+    max_build_duration: 30
+    environment:
+      flutter: stable
+      java: 17
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: develop
+          include: true
+        - pattern: feature/*
+          include: true
+      cancel_previous_builds: true
+
+    scripts:
+      - name: Get packages
+        script: flutter pub get
+
+      - name: Analyze
+        script: flutter analyze --no-fatal-infos || true
+
+      - name: Build debug APK
+        script: flutter build apk --debug
+
+    artifacts:
+      - build/app/outputs/flutter-apk/app-debug.apk
+
+    publishing:
+      email:
+        recipients:
+          - dev@tobest.app
+        notify:
+          success: false
+          failure: true

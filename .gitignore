@@ -1,0 +1,61 @@
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+flutter_*.png
+doc/api/
+*.iml
+
+# Android
+android/.gradle/
+android/captures/
+android/gradlew
+android/gradlew.bat
+android/local.properties
+android/GeneratedPluginRegistrant.java
+android/app/google-services.json
+
+# Signing — NEVER commit these
+android/key.properties
+android/app/keystore.jks
+android/app/*.jks
+android/app/*.keystore
+
+# iOS
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Flutter/ephemeral/
+ios/Pods/
+ios/.symlinks/
+ios/Runner/GeneratedPluginRegistrant.*
+ios/Runner.xcworkspace/
+
+# Secrets / Config
+.env
+.env.local
+secrets.json
+assets/config/secrets.json
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+
+# Misc
+*.log
+pubspec.lock    # keep this for reproducible builds (optional: remove this line)
