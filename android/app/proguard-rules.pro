@@ -14,8 +14,9 @@
 # Image Picker
 -keep class io.flutter.plugins.imagepicker.** { *; }
 
-# WebView
--keep class com.pichillilorenzo.flutter_webview_plugin.** { *; }
+# WebView (official webview_flutter package)
+-keep class io.flutter.plugins.webviewflutter.** { *; }
+-dontwarn io.flutter.plugins.webviewflutter.**
 
 # Gson / JSON
 -keepattributes Signature
