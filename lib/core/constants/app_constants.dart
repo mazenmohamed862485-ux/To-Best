@@ -7,6 +7,10 @@ class AppConstants {
   static const String appVersion = 'v8.2.0';
   static const String packageName = 'com.tobest.app';
 
+  // Development defaults
+  static const String devWebAppUrl = 'https://script.google.com/macros/s/AKfycbwQrKSMoGJfnyrUG9zmqd_ou-TqDGyDYcky_WAbZaXrpWA-9JfnNOZLOi33w0q2TYdq/exec';
+  static const String devSecretKey = 'Mazen124261';
+
   // Storage keys
   static const String keyWebAppUrl = 'webAppUrl';
   static const String keySecretKey = 'secretKey';
