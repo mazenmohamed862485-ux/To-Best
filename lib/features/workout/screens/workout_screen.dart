@@ -461,7 +461,15 @@ class _RecentSessionsList extends ConsumerWidget {
     );
   }
 }
-) async {
+
+  Future<bool> showConfirmDialog(
+    BuildContext context, {
+    required String title,
+    required String content,
+    String? cancelText,
+    String? confirmText,
+    bool isDestructive = false,
+  }) async {
   final result = await showDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(

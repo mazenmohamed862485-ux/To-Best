@@ -223,7 +223,7 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  void _updateUserPref(Ref ref, String key, dynamic value) {
+  void _updateUserPref(WidgetRef ref, String key, dynamic value) {
     final user = ref.read(authProvider).user;
     if (user == null) return;
     final updated = user.copyWith(
