@@ -36,10 +36,16 @@ class _AdminScreenState extends ConsumerState<AdminScreen>
   String _filterRole = 'all';
   String _filterStatus = 'all';
 
+  bool get _isSuperAdmin =>
+      ref.read(authProvider).user?.isSuperAdmin ?? false;
+
   @override
   void initState() {
     super.initState();
-    _tab = TabController(length: 5, vsync: this);
+    // Read superAdmin flag synchronously so TabController length matches
+    // the actual number of tabs/children rendered in the build method.
+    final tabCount = _isSuperAdmin ? 5 : 4;
+    _tab = TabController(length: tabCount, vsync: this);
   }
 
   @override
@@ -54,6 +60,12 @@ class _AdminScreenState extends ConsumerState<AdminScreen>
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final authState = ref.watch(authProvider);
     final isSuperAdmin = authState.user?.isSuperAdmin ?? false;
+
+    // Rebuild TabController if superAdmin status changed after initial creation
+    if (_tab.length != (isSuperAdmin ? 5 : 4)) {
+      _tab.dispose();
+      _tab = TabController(length: isSuperAdmin ? 5 : 4, vsync: this);
+    }
 
     return Scaffold(
       appBar: AppBar(
