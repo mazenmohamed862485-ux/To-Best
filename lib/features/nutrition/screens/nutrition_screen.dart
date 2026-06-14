@@ -9,8 +9,6 @@ import '../providers/nutrition_provider.dart';
 import '../../../features/auth/providers/auth_provider.dart';
 import '../data/models/nutrition_model.dart';
 import 'food_search_screen.dart';
-import 'meal_plan_screen.dart';
-import 'water_tracker_screen.dart';
 
 class NutritionScreen extends ConsumerStatefulWidget {
   const NutritionScreen({super.key});
